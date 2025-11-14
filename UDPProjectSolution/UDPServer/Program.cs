@@ -1,1 +1,45 @@
+using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+
+class ClientStats
+{
+    public DateTime LastActive { get; set; }
+    public long BytesIn { get; set; }
+    public long BytesOut { get; set; }
+    public int Messages { get; set; }
+    public bool IsAdmin { get; set; }
+}
+
+class UDPServer
+{
+    static string SERVER_IP = "0.0.0.0";
+    static int PORT = 9000;
+    static UdpClient server;
+    static Dictionary<string, ClientStats> klientet = new Dictionary<string, ClientStats>();
+    static int MAX_KLIENTET = 10;
+    static int TIMEOUT_SECONDS = 20;
+    static object locker = new object();
+
+    static void Main(string[] args)
+    {
+        Console.WriteLine("SERVERI UDP U NIS...");
+        server = new UdpClient(PORT);
+
+        if (!Directory.Exists("server_files"))
+            Directory.CreateDirectory("server_files");
+
+        if (!Directory.Exists("Logs"))
+            Directory.CreateDirectory("Logs");
+
+        Thread monitorimiThread = new Thread(MonitoroTimeout);
+        monitorimiThread.Start();
+
+        Console.WriteLine($"Serveri po dëgjon në IP {SERVER_IP} portin {PORT}");
+        Console.WriteLine("---------------------------------------");
 ﻿
