@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="UDPClient/UDPClient.csproj" Id="2c7ff72f-120d-4db1-9a78-b0b6734aa36a" />
+  <Project Path="UDPServer/UDPServer.csproj" Id="67332ca3-ae5d-4411-8ac9-c080ba194a1c" />
+</Solution>
