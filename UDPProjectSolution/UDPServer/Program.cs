@@ -42,8 +42,49 @@ class UDPServer
 
         Console.WriteLine($"Serveri po dëgjon në IP {SERVER_IP} portin {PORT}");
         Console.WriteLine("---------------------------------------");
+while (true)
+        {
+            IPEndPoint clientEP = new IPEndPoint(IPAddress.Any, 0);
+            byte[] data = server.Receive(ref clientEP);
 
-        
+            string klientKey = clientEP.ToString();
+            string msg = Encoding.UTF8.GetString(data);
+
+            bool isAdmin;
+
+            lock (locker)
+            {
+                if (!klientet.ContainsKey(klientKey))
+                {
+                    if (klientet.Count >= MAX_KLIENTET)
+                    {
+                        Dergo(clientEP, "Serveri është i mbushur.");
+                        continue;
+                    }
+
+                    bool beAdmin = klientet.Count == 0;
+
+                    klientet[klientKey] = new ClientStats
+                    {
+                        LastActive = DateTime.Now,
+                        BytesIn = data.Length,
+                        BytesOut = 0,
+                        Messages = 1,
+                        IsAdmin = beAdmin
+                    };
+
+                    Console.WriteLine($"Klient i ri: {klientKey} (admin: {beAdmin})");
+                }
+                else
+                {
+                    klientet[klientKey].LastActive = DateTime.Now;
+                    klientet[klientKey].BytesIn += data.Length;
+                    klientet[klientKey].Messages++;
+                }
+
+
+
+                
         if (msg.ToUpper() == "STATS")
 {
     string stats = GjeneroStatistikat();
