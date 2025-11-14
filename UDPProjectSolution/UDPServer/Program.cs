@@ -42,4 +42,29 @@ class UDPServer
 
         Console.WriteLine($"Serveri po dëgjon në IP {SERVER_IP} portin {PORT}");
         Console.WriteLine("---------------------------------------");
+
+        
+        if (msg.ToUpper() == "STATS")
+{
+    string stats = GjeneroStatistikat();
+    Dergo(clientEP, stats);
+    RuajLogStats(stats);
+    continue;
+}
+
+if (msg.StartsWith("/list", StringComparison.OrdinalIgnoreCase))
+{
+    string[] files = Directory.GetFiles("server_files");
+    if (files.Length == 0)
+    {
+        Dergo(clientEP, "Nuk ka asnjë file.");
+    }
+    else
+    {
+        string fileList = string.Join("\n", files.Select(f => Path.GetFileName(f)));
+        Dergo(clientEP, fileList);
+    }
+    continue;
+}
+
 ﻿
