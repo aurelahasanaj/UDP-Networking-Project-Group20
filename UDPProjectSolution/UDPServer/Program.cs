@@ -66,5 +66,31 @@ if (msg.StartsWith("/list", StringComparison.OrdinalIgnoreCase))
     }
     continue;
 }
+if (msg.StartsWith("/delete") && isAdmin)
+{
+    string file = msg.Split(' ', 2)[1].Trim();
+    File.Delete(Path.Combine("server_files", file));
+    Dergo(clientEP, "File u fshi.");
+    continue;
+}
 
+if (msg.StartsWith("/upload") && isAdmin)
+{
+    string[] p = msg.Split(' ', 3);
+    string file = p[1].Trim();
+    string content = p[2];
+    File.WriteAllText(Path.Combine("server_files", file), content);
+    Dergo(clientEP, "File u ngarkua.");
+    continue;
+}
+
+if (msg.StartsWith("/download"))
+{
+    string file = msg.Split(' ', 2)[1].Trim();
+    string content = File.ReadAllText(Path.Combine("server_files", file));
+    Dergo(clientEP, content);
+    continue;
+}
+
+Dergo(clientEP, "Mesazhi u pranua.");
 ﻿
