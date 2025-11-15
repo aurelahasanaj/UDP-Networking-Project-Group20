@@ -131,6 +131,48 @@ if (msg.StartsWith("/read", StringComparison.OrdinalIgnoreCase))
     continue;
 }
 
+if (msg.StartsWith("/search", StringComparison.OrdinalIgnoreCase))
+{
+    string[] p = msg.Split(' ', 2);
+    string keyword = p.Length > 1 ? p[1].Trim() : "";
+    string result = "";
+
+    foreach (string f in Directory.GetFiles("server_files"))
+    {
+        foreach (string line in File.ReadAllLines(f))
+        {
+            if (line.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                result += $"{Path.GetFileName(f)}: {line}\n";
+        }
+    }
+
+    Dergo(clientEP, result == "" ? "Nuk u gjet asgjë." : result);
+    continue;
+}
+
+if (msg.StartsWith("/info"))
+{
+    string[] p = msg.Split(' ', 2);
+    string file = p.Length > 1 ? p[1].Trim() : "";
+    string path = Path.Combine("server_files", file);
+
+    if (!File.Exists(path))
+    {
+        Dergo(clientEP, "File nuk ekziston.");
+        continue;
+    }
+
+    FileInfo fi = new FileInfo(path);
+    string info =
+        $"Emri: {fi.Name}\n" +
+        $"Madhësia: {fi.Length} bytes\n" +
+        $"Krijuar: {fi.CreationTime}\n" +
+        $"Modifikuar: {fi.LastWriteTime}";
+
+    Dergo(clientEP, info);
+    continue;
+}
+
 if (msg.StartsWith("/delete") && isAdmin)
 {
     string file = msg.Split(' ', 2)[1].Trim();
