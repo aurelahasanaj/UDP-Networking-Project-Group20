@@ -81,7 +81,11 @@ while (true)
                     klientet[klientKey].BytesIn += data.Length;
                     klientet[klientKey].Messages++;
                 }
+  isAdmin = klientet[klientKey].IsAdmin;
+            }
 
+            Console.WriteLine($"[{klientKey}] {msg}");
+            RuajLogMesazh(klientKey, msg);
 
 
                 
