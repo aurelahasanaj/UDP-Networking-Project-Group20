@@ -237,5 +237,39 @@ static void MonitoroTimeout()
 
         File.AppendAllText("Logs/server_stats.txt", GjeneroStatistikat());
     }
+static void RuajLogMesazh(string client, string msg)
+{
+    File.AppendAllText(
+        "Logs/server_messages.txt",
+        $"{DateTime.Now} ({client}) {msg}\n"
+    );
 }
 
+static void RuajLogStats(string stats)
+{
+    File.AppendAllText(
+        "Logs/server_stats.txt",
+        $"{DateTime.Now}\n{stats}\n"
+    );
+}
+
+static string GjeneroStatistikat()
+{
+    StringBuilder sb = new StringBuilder();
+    long totalIn = 0;
+    long totalOut = 0;
+
+    foreach (var kl in klientet)
+    {
+        totalIn += kl.Value.BytesIn;
+        totalOut += kl.Value.BytesOut;
+
+        sb.AppendLine(
+            $"{kl.Key} | mesazhe: {kl.Value.Messages} | bytes in: {kl.Value.BytesIn} | bytes out: {kl.Value.BytesOut}"
+        );
+    }
+
+    sb.AppendLine($"Trafiku total: {totalIn + totalOut} bytes");
+
+    return sb.ToString();
+}
