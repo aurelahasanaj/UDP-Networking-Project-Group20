@@ -107,6 +107,30 @@ if (msg.StartsWith("/list", StringComparison.OrdinalIgnoreCase))
     }
     continue;
 }
+
+if (msg.StartsWith("/read", StringComparison.OrdinalIgnoreCase))
+{
+    string[] p = msg.Split(' ', 2);
+    if (p.Length < 2)
+    {
+        Dergo(clientEP, "Përdorimi: /read <filename>");
+        continue;
+    }
+
+    string file = p[1].Trim();
+    string path = Path.Combine("server_files", file);
+
+    if (!File.Exists(path))
+    {
+        Dergo(clientEP, "File nuk ekziston.");
+        continue;
+    }
+
+    string content = File.ReadAllText(path);
+    Dergo(clientEP, content);
+    continue;
+}
+
 if (msg.StartsWith("/delete") && isAdmin)
 {
     string file = msg.Split(' ', 2)[1].Trim();
