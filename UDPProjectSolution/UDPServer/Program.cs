@@ -158,4 +158,38 @@ if (msg.StartsWith("/download"))
 }
 
 Dergo(clientEP, "Mesazhi u pranua.");
-﻿
+﻿static void Dergo(IPEndPoint ep, string message)
+{
+    byte[] bytes = Encoding.UTF8.GetBytes(message);
+    lock (locker)
+    {
+        string key = ep.ToString();
+        if (klientet.ContainsKey(key))
+            klientet[key].BytesOut += bytes.Length;
+    }
+    server.Send(bytes, bytes.Length, ep);
+}
+
+static void MonitoroTimeout()
+{
+    while (true)
+    {
+        Thread.Sleep(5000);
+        List<string> heq = new List<string>();
+
+        lock (locker)
+        {
+            foreach (var kl in klientet)
+            {
+                if ((DateTime.Now - kl.Value.LastActive).TotalSeconds > TIMEOUT_SECONDS)
+                    heq.Add(kl.Key);
+            }
+
+            foreach (string k in heq)
+                klientet.Remove(k);
+        }
+
+        File.AppendAllText("Logs/server_stats.txt", GjeneroStatistikat());
+    }
+}
+
