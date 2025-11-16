@@ -27,3 +27,19 @@ class UDPClient
 
             byte[] data = Encoding.UTF8.GetBytes(msg);
             client.Send(data, data.Length, serverEP);
+     try
+            {
+                client.Client.ReceiveTimeout = 5000;
+                byte[] resp = client.Receive(ref serverEP);
+                string response = Encoding.UTF8.GetString(resp);
+                Console.WriteLine(response);
+            }
+            catch
+            {
+                Console.WriteLine("Serveri nuk u përgjigj.");
+            }
+        }
+
+        client.Close();
+    }
+}
