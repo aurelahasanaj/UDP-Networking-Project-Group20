@@ -8,13 +8,13 @@ Ky projekt implementon një **UDP Server** dhe një **UDP Client** të zhvilluar
 
 Serveri vepron si qendër e komunikimit, ndërsa klientët mund të jenë admin ose përdorues të thjeshtë. Projekti është testuar me disa klientë paralelisht dhe plotëson të gjitha kërkesat e detyrës.
 
-👥 Anëtarët e Grupit
+Anëtarët e Grupit
 • **Aurela Hasanaj** – Admin (Write/Read/Execute)
 • **Delvina Elshani** – Klient (Read)
 • **Arbias Bala** – Klient (Read)
 • **Elion Maksutaj** – Klient (Read)
 
-🟦 Funksionalitetet e Serverit
+Funksionalitetet e Serverit
 • Pranon deri në **10 klientë njëkohësisht**
 • Klienti i parë bëhet automatikisht **ADMIN**
 • Kontroll qasjeje për komanda specifike (admin vs user)
@@ -24,7 +24,7 @@ Serveri vepron si qendër e komunikimit, ndërsa klientët mund të jenë admin 
 • Pasivon klientët që nuk reagojnë për 20 sekonda (timeout)
 • Menaxhon file brenda folderit **server_files/**
 
-🟩 Funksionalitetet e Klientit
+Funksionalitetet e Klientit
 • Lidhet me serverin duke futur IP (zakonisht 127.0.0.1)
 • Pyet automatikisht nëse përdoruesi është admin
 • Admin verifikohet me fjalëkalim
@@ -32,7 +32,7 @@ Serveri vepron si qendër e komunikimit, ndërsa klientët mund të jenë admin 
 • Përdoruesit normalë kanë *delay random* për simulim real të rrjetit
 • Merr përgjigje nga serveri në kohë reale
 
-🟧 Komandat e Mbështetura
+Komandat e Mbështetura
 **Për të gjithë përdoruesit:**
 /list – Liston file-t në server
 /read <file> – Lexon përmbajtjen e një file
@@ -53,7 +53,7 @@ STATS – Statistikat e serverit
 5️⃣ Zgjidh rolin (admin/klient)
 6️⃣ Shkruaj komandat e dëshiruara
 
-📂 Struktura e Projektit
+Struktura e Projektit
 /UDPProjectSolution
 ├── UDPServer
 │   ├── Program.cs
