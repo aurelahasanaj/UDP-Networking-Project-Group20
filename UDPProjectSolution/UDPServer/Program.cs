@@ -295,13 +295,13 @@ static void MonitoroTimeout()
             foreach (var kl in klientet)
             {
                 if ((DateTime.Now - kl.Value.LastActive).TotalSeconds > TIMEOUT_SECONDS)
-                    perMeHeq.Add(kl.Key)
+                    perMeHeq.Add(kl.Key);
             }
 
             foreach (string k in perMeHeq)
                 klientet.Remove(k);
-        }
-  Console.WriteLine($"Klienti {k} u shkëput (timeout).");
+          Console.WriteLine($"Klienti {k} u shkëput (timeout).");
+        
     }
 }
     
