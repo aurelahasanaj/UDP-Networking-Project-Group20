@@ -81,3 +81,4 @@ Funksionalitetet e Përmbushura
 
 Përfundim
 Projekti është funksional, stabil dhe përmbush të gjitha kërkesat e detyrës. Serveri menaxhon klientët në mënyrë efikase, logon çdo aktivitet dhe siguron komunikim të shpejtë përmes UDP. Ky projekt demonstron qartë konceptet bazike të rrjeteve kompjuterike, protokollit UDP, programimit paralel dhe menaxhimit të file-ve.
+```
