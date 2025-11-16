@@ -13,7 +13,49 @@ class UDPClient
         int port = 9000;
   Console.Write("A je admin? (po/jo): ");
         bool isAdmin = Console.ReadLine().Trim().ToLower() == "po";
+
+        UdpClient checkClient = new UdpClient();
+        IPEndPoint checkEP = new IPEndPoint(IPAddress.Parse(serverIP), port);
+
+        checkClient.Client.ReceiveTimeout = 2000;
+
+        byte[] checkMsg = Encoding.UTF8.GetBytes("CHECK_ADMIN");
+        checkClient.Send(checkMsg, checkMsg.Length, checkEP);
+
+        string adminStatus = "";
+        try
+        {
+            byte[] resp = checkClient.Receive(ref checkEP);
+            adminStatus = Encoding.UTF8.GetString(resp);
+        }
+        catch { }
+
+        checkClient.Close();
+
+        if (adminStatus == "EXISTS" && isAdmin)
+        {
+            Console.WriteLine("Admini ekziston tashmë. Nuk mund të hysh si admin.");
+            isAdmin = false;
+        }
+        
  if (isAdmin)
+ {
+    UdpClient makeAdmin = new UdpClient();
+    makeAdmin.Client.ReceiveTimeout = 2000;
+
+    byte[] msg = Encoding.UTF8.GetBytes("SET_ADMIN");
+    makeAdmin.Send(msg, msg.Length, checkEP);
+
+    try
+    {
+        string response = Encoding.UTF8.GetString(makeAdmin.Receive(ref checkEP));
+
+        if (response == "EXISTS")
+        {
+            Console.WriteLine("Admini ekziston tashmë. Nuk mund të hysh si admin.");
+            isAdmin = false;
+        }
+        else
         {
             Console.Write("Shkruaj fjalëkalimin e adminit: ");
             string pass = Console.ReadLine();
@@ -26,15 +68,25 @@ class UDPClient
 
             Console.WriteLine("Qasje ADMIN.");
         }
+    }
+     catch
+   {
+    Console.WriteLine("Gabim gjatë marrjes së përgjigjes.");
+    isAdmin = false;
+}
+
+            makeAdmin.Close();
+       }
         else
         {
             Console.WriteLine("Qasje normale (vetëm READ).");
         }
+        
         UdpClient client = new UdpClient();
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse(serverIP), port);
 
         Console.WriteLine("Klienti u nis.");
-       Console.WriteLine("Komandat e lejuara:");
+        Console.WriteLine("Komandat e lejuara:");
 
         if (isAdmin)
             Console.WriteLine("/list, /read, /search, /info, /delete, /upload, /download, STATS, /exit");
