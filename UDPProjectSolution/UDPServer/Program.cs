@@ -26,6 +26,8 @@ class UDPServer
     static int TIMEOUT_SECONDS = 20;
     static object locker = new object();
 
+    static bool adminExists = false; 
+    
     static void Main(string[] args)
     {
         Console.WriteLine("SERVERI UDP U NIS...");
@@ -87,7 +89,33 @@ while (true)
 
             Console.WriteLine($"[{klientKey}] {msg}");
             RuajLogMesazh(klientKey, msg);
-                
+
+if (msg == "CHECK_ADMIN")
+            {
+                if (adminExists)
+                    Dergo(clientEP, "EXISTS");
+                else
+                    Dergo(clientEP, "NONE");
+
+                continue;
+            }
+
+            if (msg == "SET_ADMIN")
+            {
+                if (!adminExists)
+                {
+                    adminExists = true;
+                    klientet[klientKey].IsAdmin = true;
+                    Dergo(clientEP, "OK");
+                }
+                else
+                {
+                    Dergo(clientEP, "EXISTS");
+                }
+
+                continue;
+            }
+    
         if (msg.ToUpper() == "STATS")
 {
     string stats = GjeneroStatistikat();
@@ -300,11 +328,16 @@ static void MonitoroTimeout()
 
             foreach (string k in perMeHeq)
             {
+                bool wasAdmin = klientet[k].IsAdmin;
+                
                 klientet.Remove(k);
                 Console.WriteLine($"Klienti {k} u shkëput (timeout).");
+
+                if (wasAdmin)
+                adminExists = false;
             }
         }
-
+   
         string stats = GjeneroStatistikat();
         string text = $"{DateTime.Now}\n{stats}\n";
         File.AppendAllText("Logs/server_stats.txt", text);
