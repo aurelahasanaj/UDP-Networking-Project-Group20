@@ -299,12 +299,12 @@ static void MonitoroTimeout()
             }
 
             foreach (string k in perMeHeq)
+            {
                 klientet.Remove(k);
           Console.WriteLine($"Klienti {k} u shkëput (timeout).");
         
     }
 }
-    
             string stats = GjeneroStatistikat();
             string text = $"{DateTime.Now}\n{stats}\n";
             File.AppendAllText("Logs/server_stats.txt", text);
@@ -346,7 +346,7 @@ static string GjeneroStatistikat()
     }
 }
 
-    sb.AppendLine($"Trafiku total: {totalln + totalOut} bytes");
+    sb.AppendLine($"Trafiku total: {totalIn + totalOut} bytes");
     return sb.ToString();
   }
 }
