@@ -86,7 +86,8 @@ while (true)
 
             Console.WriteLine($"[{klientKey}] {msg}");
             RuajLogMesazh(klientKey, msg);
-
+if (!isAdmin)
+    Thread.Sleep(new Random().Next(900, 1500));
 
                 
         if (msg.ToUpper() == "STATS")
