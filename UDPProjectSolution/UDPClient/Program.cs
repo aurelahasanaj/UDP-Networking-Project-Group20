@@ -17,3 +17,13 @@ class UDPClient
         Console.WriteLine("Klienti u nis.");
         Console.WriteLine("Shkruaj komanda: /list, /read, /search, /info, /delete, /upload, /download, STATS, /exit");
 ﻿
+ while (true)
+        {
+            Console.Write("> ");
+            string msg = Console.ReadLine();
+
+            if (msg.ToLower() == "/exit")
+                break;
+
+            byte[] data = Encoding.UTF8.GetBytes(msg);
+            client.Send(data, data.Length, serverEP);
