@@ -59,7 +59,8 @@ class UDPClient
                     continue;
                 }
 
-                Thread.Sleep(1000);
+               Thread.Sleep(new Random().Next(800, 1500));
+
             }
 
             byte[] data = Encoding.UTF8.GetBytes(msg);
