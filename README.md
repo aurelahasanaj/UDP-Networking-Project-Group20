@@ -3,7 +3,7 @@ UDP Networking Project – Group 20
 Lënda: Rrjetat Kompjuterike 
 Protokolli: UDP
 Gjuha: C#
-
+```
 Përshkrimi i Projektit
 Ky projekt implementon një **UDP Server** dhe një **UDP Client** të zhvilluar në C#, të cilët komunikojnë mes vete përmes protokollit UDP. Projekti është zhvilluar për lëndën **Rrjetat Kompjuterike**, duke demonstruar menaxhim real të klientëve, logim, operacione me file dhe kontroll qasjeje.
 
@@ -17,6 +17,7 @@ Anëtarët e Grupit
 • Elion Maksutaj – Klient (Read)
 ```
 Funksionalitetet e Serverit
+```
 • Pranon deri në **10 klientë njëkohësisht**
 • Klienti i parë bëhet automatikisht **ADMIN**
 • Kontroll qasjeje për komanda specifike (admin vs user)
@@ -25,16 +26,18 @@ Funksionalitetet e Serverit
 • Regjistron statistika periodike në **Logs/server_stats.txt**
 • Pasivon klientët që nuk reagojnë për 20 sekonda (timeout)
 • Menaxhon file brenda folderit **server_files/**
-
+```
 Funksionalitetet e Klientit
+```
 • Lidhet me serverin duke futur IP (zakonisht 127.0.0.1)
 • Pyet automatikisht nëse përdoruesi është admin
 • Admin verifikohet me fjalëkalim
 • Shfaq listën e komandave të lejuara për çdo rol
 • Përdoruesit normalë kanë *delay random* për simulim real të rrjetit
 • Merr përgjigje nga serveri në kohë reale
-
+```
 Komandat e Mbështetura
+```
 Për të gjithë përdoruesit:
 /list – Liston file-t në server
 /read <file> – Lexon përmbajtjen e një file
@@ -42,7 +45,7 @@ Për të gjithë përdoruesit:
 /info <file> – Informata për file (madhësia, data, modifikimi)
 STATS – Statistikat e serverit
 /exit – Mbyll klientin
-
+```
 Vetëm për ADMIN:
 ```
 /upload <file> <content> – Krijon file të ri në server
@@ -68,6 +71,7 @@ Struktura e Projektit
 └── README.md
 ```
 Funksionalitetet e Përmbushura
+```
 •  Variablat IP & Port
 •  Dëgjimi i klientëve
 •  Refuzimi kur tejkalohen klientët max
@@ -78,7 +82,6 @@ Funksionalitetet e Përmbushura
 •  Statistika të detajuara të serverit
 •  Logging i dyfishtë (mesazhe + statistika)
 •  Testuar me disa klientë paralelisht
-
+```
 Përfundim
 Projekti është funksional, stabil dhe përmbush të gjitha kërkesat e detyrës. Serveri menaxhon klientët në mënyrë efikase, logon çdo aktivitet dhe siguron komunikim të shpejtë përmes UDP. Ky projekt demonstron qartë konceptet bazike të rrjeteve kompjuterike, protokollit UDP, programimit paralel dhe menaxhimit të file-ve.
-```
