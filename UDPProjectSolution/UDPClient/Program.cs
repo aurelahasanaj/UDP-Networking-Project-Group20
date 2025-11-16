@@ -34,7 +34,13 @@ class UDPClient
         IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse(serverIP), port);
 
         Console.WriteLine("Klienti u nis.");
-        Console.WriteLine("Shkruaj komanda: /list, /read, /search, /info, /delete, /upload, /download, STATS, /exit");
+       Console.WriteLine("Komandat e lejuara:");
+
+        if (isAdmin)
+            Console.WriteLine("/list, /read, /search, /info, /delete, /upload, /download, STATS, /exit");
+        else
+            Console.WriteLine("/list, /read, /search, /info, /exit");
+
 ﻿
  while (true)
         {
@@ -43,6 +49,18 @@ class UDPClient
 
             if (msg.ToLower() == "/exit")
                 break;
+       if (!isAdmin)
+            {
+                if (msg.StartsWith("/delete") ||
+                    msg.StartsWith("/upload") ||
+                    msg.StartsWith("/download"))
+                {
+                    Console.WriteLine("Nuk ke leje për këtë komandë.");
+                    continue;
+                }
+
+                Thread.Sleep(1000);
+            }
 
             byte[] data = Encoding.UTF8.GetBytes(msg);
             client.Send(data, data.Length, serverEP);
