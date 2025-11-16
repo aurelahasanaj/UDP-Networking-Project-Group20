@@ -273,3 +273,19 @@ static string GjeneroStatistikat()
 
     return sb.ToString();
 }
+ try
+            {
+                client.Client.ReceiveTimeout = 5000;
+                byte[] resp = client.Receive(ref serverEP);
+                string response = Encoding.UTF8.GetString(resp);
+                Console.WriteLine(response);
+            }
+            catch
+            {
+                Console.WriteLine("Serveri nuk u përgjigj.");
+            }
+        }
+
+        client.Close();
+    }
+}
