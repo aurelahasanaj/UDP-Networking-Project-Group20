@@ -42,6 +42,7 @@ class UDPServer
 
         Console.WriteLine($"Serveri po dëgjon në IP {SERVER_IP} portin {PORT}");
         Console.WriteLine("---------------------------------------");
+        
 while (true)
         {
             IPEndPoint clientEP = new IPEndPoint(IPAddress.Any, 0);
@@ -79,16 +80,13 @@ while (true)
                 {
                     klientet[klientKey].LastActive = DateTime.Now;
                     klientet[klientKey].BytesIn += data.Length;
-                    klientet[klientKey].Messages++;
+                    klientet[klientKey].Messages+= 1;
                 }
   isAdmin = klientet[klientKey].IsAdmin;
             }
 
             Console.WriteLine($"[{klientKey}] {msg}");
             RuajLogMesazh(klientKey, msg);
-if (!isAdmin)
-    Thread.Sleep(new Random().Next(900, 1500));
-
                 
         if (msg.ToUpper() == "STATS")
 {
@@ -115,7 +113,7 @@ if (msg.StartsWith("/list", StringComparison.OrdinalIgnoreCase))
 
 if (msg.StartsWith("/read", StringComparison.OrdinalIgnoreCase))
 {
-    string[] p = msg.Split(' ', 2);
+    string[] p = msg.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
     if (p.Length < 2)
     {
         Dergo(clientEP, "Përdorimi: /read <filename>");
@@ -138,9 +136,15 @@ if (msg.StartsWith("/read", StringComparison.OrdinalIgnoreCase))
 
 if (msg.StartsWith("/search", StringComparison.OrdinalIgnoreCase))
 {
-    string[] p = msg.Split(' ', 2);
-    string keyword = p.Length > 1 ? p[1].Trim() : "";
-    string result = "";
+  string[] p = msg.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                if (p.Length < 2)
+                {
+                    Dergo(clientEP, "Përdorimi: /search <keyword>");
+                    continue;
+                }
+
+                string keyword = p[1].Trim();
+                string result = "";
 
     foreach (string f in Directory.GetFiles("server_files"))
     {
@@ -151,16 +155,25 @@ if (msg.StartsWith("/search", StringComparison.OrdinalIgnoreCase))
         }
     }
 
-    Dergo(clientEP, result == "" ? "Nuk u gjet asgjë." : result);
+     if (result == "")
+    result = "Nuk u gjet asgjë.";
+    
+    Dergo(clientEP, result);
     continue;
 }
 
-if (msg.StartsWith("/info"))
-{
-    string[] p = msg.Split(' ', 2);
-    string file = p.Length > 1 ? p[1].Trim() : "";
-    string path = Path.Combine("server_files", file);
+ if (msg.StartsWith("/info", StringComparison.OrdinalIgnoreCase))
+ {
+    string[] p = msg.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+   if (p.Length < 2)
+   {
+     Dergo(clientEP, "Përdorimi: /info <filename>");
+    continue;
+  }
 
+                string file = p[1].Trim();
+                string path = Path.Combine("server_files", file);
+     
     if (!File.Exists(path))
     {
         Dergo(clientEP, "File nuk ekziston.");
@@ -178,33 +191,86 @@ if (msg.StartsWith("/info"))
     continue;
 }
 
-if (msg.StartsWith("/delete") && isAdmin)
+if (msg.StartsWith("/delete", StringComparison.OrdinalIgnoreCase))
 {
-    string file = msg.Split(' ', 2)[1].Trim();
-    File.Delete(Path.Combine("server_files", file));
-    Dergo(clientEP, "File u fshi.");
-    continue;
-}
+    string[] p = msg.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                if (p.Length < 2)
+                {
+                    Dergo(clientEP, "Përdorimi: /delete <filename>");
+                    continue;
+                }
 
-if (msg.StartsWith("/upload") && isAdmin)
-{
-    string[] p = msg.Split(' ', 3);
-    string file = p[1].Trim();
-    string content = p[2];
-    File.WriteAllText(Path.Combine("server_files", file), content);
-    Dergo(clientEP, "File u ngarkua.");
-    continue;
-}
+                if (!isAdmin)
+                {
+                    Dergo(clientEP, "Nuk ke leje për /delete.");
+                    continue;
+                }
 
-if (msg.StartsWith("/download"))
+                string file = p[1].Trim();
+                string path = Path.Combine("server_files", file);
+
+                if (!File.Exists(path))
+                {
+                    Dergo(clientEP, "File nuk ekziston.");
+                    continue;
+                }
+
+                File.Delete(path);
+                Dergo(clientEP, "File u fshi.");
+                continue;
+              }
+
+if (msg.StartsWith("/upload", StringComparison.OrdinalIgnoreCase))
 {
-    string file = msg.Split(' ', 2)[1].Trim();
-    string content = File.ReadAllText(Path.Combine("server_files", file));
-    Dergo(clientEP, content);
-    continue;
-}
+    string[] p = msg.Split(' ', 3, StringSplitOptions.RemoveEmptyEntries);
+                if (p.Length < 3)
+                {
+                    Dergo(clientEP, "Përdorimi: /upload <filename> <përmbajtja>");
+                    continue;
+                }
+
+                if (!isAdmin)
+                {
+                    Dergo(clientEP, "Nuk ke leje për /upload.");
+                    continue;
+                }
+
+                string file = p[1].Trim();
+                string content = p[2];
+                string path = Path.Combine("server_files", file);
+
+                File.WriteAllText(path, content);
+                Dergo(clientEP, "File u ngarkua.");
+                continue;
+              }
+
+if (msg.StartsWith("/download", StringComparison.OrdinalIgnoreCase))
+{
+    string[] p = msg.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                if (p.Length < 2)
+                {
+                    Dergo(clientEP, "Përdorimi: /download <filename>");
+                    continue;
+                }
+
+                string file = p[1].Trim();
+                string path = Path.Combine("server_files", file);
+
+                if (!File.Exists(path))
+                {
+                    Dergo(clientEP, "File nuk ekziston.");
+                    continue;
+                }
+
+                string content = File.ReadAllText(path);
+                Dergo(clientEP, content);
+                continue;
+              }
 
 Dergo(clientEP, "Mesazhi u pranua.");
+}
+    }
+    
 ﻿static void Dergo(IPEndPoint ep, string message)
 {
     byte[] bytes = Encoding.UTF8.GetBytes(message);
@@ -222,37 +288,39 @@ static void MonitoroTimeout()
     while (true)
     {
         Thread.Sleep(5000);
-        List<string> heq = new List<string>();
+        List<string> perMeHeq = new List<string>();
 
         lock (locker)
         {
             foreach (var kl in klientet)
             {
                 if ((DateTime.Now - kl.Value.LastActive).TotalSeconds > TIMEOUT_SECONDS)
-                    heq.Add(kl.Key);
+                    perMeHeq.Add(kl.Key)
             }
 
-            foreach (string k in heq)
+            foreach (string k in perMeHeq)
                 klientet.Remove(k);
         }
-
-        File.AppendAllText("Logs/server_stats.txt", GjeneroStatistikat());
+  Console.WriteLine($"Klienti {k} u shkëput (timeout).");
     }
 }
+    
+            string stats = GjeneroStatistikat();
+            string text = $"{DateTime.Now}\n{stats}\n";
+            File.AppendAllText("Logs/server_stats.txt", text);
+        }
+    }
+
 static void RuajLogMesazh(string client, string msg)
 {
-    File.AppendAllText(
-        "Logs/server_messages.txt",
-        $"{DateTime.Now} ({client}) {msg}\n"
-    );
+    string text = $"{DateTime.Now} ({client}) {msg}\n";
+    File.AppendAllText("Logs/server_messages.txt", text);
 }
 
 static void RuajLogStats(string stats)
 {
-    File.AppendAllText(
-        "Logs/server_stats.txt",
-        $"{DateTime.Now}\n{stats}\n"
-    );
+     string text = $"{DateTime.Now}\n{stats}\n";
+     File.AppendAllText("Logs/server_stats.txt", text);
 }
 
 static string GjeneroStatistikat()
@@ -261,18 +329,25 @@ static string GjeneroStatistikat()
     long totalIn = 0;
     long totalOut = 0;
 
+      lock (locker)
+        {
+            sb.AppendLine("STATISTIKAT E SERVERIT");
+            sb.AppendLine("-------------------------------");
+            sb.AppendLine($"Klientë aktivë: {klientet.Count}");
+
     foreach (var kl in klientet)
     {
         totalIn += kl.Value.BytesIn;
         totalOut += kl.Value.BytesOut;
 
         sb.AppendLine(
-            $"{kl.Key} | mesazhe: {kl.Value.Messages} | bytes in: {kl.Value.BytesIn} | bytes out: {kl.Value.BytesOut}"
+             $"{kl.Key} | mesazhe: {kl.Value.Messages} | bytes in: {kl.Value.BytesIn} | bytes out: {kl.Value.BytesOut} | admin: {kl.Value.IsAdmin}"
         );
     }
+}
 
-    sb.AppendLine($"Trafiku total: {totalIn + totalOut} bytes");
+    sb.AppendLine($"Trafiku total: {totalln + totalOut} bytes");
 
     return sb.ToString();
+  }
 }
- 
