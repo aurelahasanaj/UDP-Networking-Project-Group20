@@ -238,6 +238,7 @@ static void MonitoroTimeout()
 
         File.AppendAllText("Logs/server_stats.txt", GjeneroStatistikat());
     }
+}
 static void RuajLogMesazh(string client, string msg)
 {
     File.AppendAllText(
