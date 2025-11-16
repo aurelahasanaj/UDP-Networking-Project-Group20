@@ -347,7 +347,6 @@ static string GjeneroStatistikat()
 }
 
     sb.AppendLine($"Trafiku total: {totalln + totalOut} bytes");
-
     return sb.ToString();
   }
 }
